@@ -1,0 +1,10 @@
+relationship 5220fa75-1df4-437f-be5c-3bae348b8d05
+	joinOnDateBehavior: datePartOnly
+	fromColumn: final_data.order_time
+	toColumn: LocalDateTable_19fbb3e1-fa01-4767-962f-f20aa6484e47.Date
+
+relationship d7a07a93-b7f6-41f8-8b0e-e88d7224d431
+	joinOnDateBehavior: datePartOnly
+	fromColumn: final_data.delivery_time
+	toColumn: LocalDateTable_bedd4a8f-8844-438f-a7a2-19f5edbb4df3.Date
+

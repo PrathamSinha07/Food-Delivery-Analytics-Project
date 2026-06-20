@@ -1,0 +1,120 @@
+table final_data
+	lineageTag: bcd94548-2351-40fe-9829-5bf2d27f3246
+
+	measure 'Average Order Value' =
+			DIVIDE(
+				[Revenue],
+				CALCULATE([Total Orders], final_data[status] <> "Cancelled"),
+				0
+			)
+		formatString: £#,0.00
+		lineageTag: a9032421-cbee-426e-bd4e-0eab987976ba
+
+	measure 'Total Orders' = DISTINCTCOUNT(final_data[order_id])
+		formatString: #,0
+		lineageTag: 127c93d6-cc1d-459c-bbe3-8f6c7e21151f
+
+	measure 'Delivered Orders' =
+			CALCULATE(
+				[Total Orders],
+				REMOVEFILTERS(final_data[status]),
+				final_data[status] = "Delivered"
+			)
+		formatString: #,0
+		lineageTag: 77d37426-9d92-42a9-ae32-59594d892d4d
+
+	measure Revenue = CALCULATE(SUM(final_data[order_value]), final_data[status] <> "Cancelled")
+		formatString: £#,0;(£#,0);£0
+		lineageTag: 715a4507-fe18-45d7-a8e4-540e41f25c3e
+
+	measure 'Delivered %' =
+			DIVIDE(
+				[Delivered Orders],
+				CALCULATE([Total Orders], REMOVEFILTERS(final_data[status])),
+				0
+			)
+		formatString: 0.0%;-0.0%;0.0%
+		lineageTag: 2c2a81dc-45e8-4bb7-a324-e89d174e41db
+
+	measure 'Overview Label' = "OVERVIEW"
+		lineageTag: c80c846d-9e60-49c0-b772-e6b7665b4025
+
+	column order_id
+		dataType: string
+		lineageTag: 6c7f7b10-0165-4d02-8e58-4adf9604f079
+		summarizeBy: none
+		sourceColumn: order_id
+
+		annotation SummarizationSetBy = Automatic
+
+	column city
+		dataType: string
+		lineageTag: d28b170e-bd5a-4006-af53-56ad0c496f60
+		summarizeBy: none
+		sourceColumn: city
+
+		annotation SummarizationSetBy = Automatic
+
+	column status
+		dataType: string
+		lineageTag: e8ee5c28-9099-43e2-b19f-63b460123d9a
+		summarizeBy: none
+		sourceColumn: status
+
+		annotation SummarizationSetBy = Automatic
+
+	column order_time
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: a0b01752-a2be-4836-9068-7c8b3190e6b5
+		summarizeBy: none
+		sourceColumn: order_time
+
+		variation Variation
+			isDefault
+			relationship: 5220fa75-1df4-437f-be5c-3bae348b8d05
+			defaultHierarchy: LocalDateTable_19fbb3e1-fa01-4767-962f-f20aa6484e47.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+	column delivery_time
+		dataType: dateTime
+		formatString: General Date
+		lineageTag: 83bd1d19-04de-42c4-9b86-9069903ba849
+		summarizeBy: none
+		sourceColumn: delivery_time
+
+		variation Variation
+			isDefault
+			relationship: d7a07a93-b7f6-41f8-8b0e-e88d7224d431
+			defaultHierarchy: LocalDateTable_bedd4a8f-8844-438f-a7a2-19f5edbb4df3.'Date Hierarchy'
+
+		annotation SummarizationSetBy = Automatic
+
+	column order_value
+		dataType: double
+		lineageTag: b282e146-9a46-4a08-aa58-93f8b4bc30ba
+		summarizeBy: sum
+		sourceColumn: order_value
+
+		annotation SummarizationSetBy = Automatic
+
+		annotation PBI_FormatHint = {"isGeneralNumber":true}
+
+	partition final_data = m
+		mode: import
+		source =
+				let
+				    Source = Csv.Document(File.Contents("E:\food delivery project\dashboard\final_data.csv"),[Delimiter=",", Columns=6, Encoding=1252, QuoteStyle=QuoteStyle.None]),
+				    #"Use First Row as Headers" = Table.PromoteHeaders(Source, [PromoteAllScalars=true]),
+				    #"Change Type" = Table.TransformColumnTypes(#"Use First Row as Headers",{{"order_id", type text}, {"city", type text}, {"status", type text}, {"order_time", type datetime}, {"delivery_time", type datetime}, {"order_value", type text}}),
+				    #"Replaced Value" = Table.ReplaceValue(#"Change Type",null,"0",Replacer.ReplaceValue,{"order_value"}),
+				    #"Changed Type" = Table.TransformColumnTypes(#"Replaced Value",{{"order_value", type number}}),
+				    #"Replaced Value1" = Table.ReplaceValue(#"Changed Type",null,0,Replacer.ReplaceValue,{"order_value"})
+				in
+				    #"Replaced Value1"
+
+	annotation PBI_ResultType = Table
+
+	annotation PBI_NavigationStepName = Navigation
+

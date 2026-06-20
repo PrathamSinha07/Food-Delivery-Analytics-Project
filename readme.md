@@ -24,10 +24,6 @@ Built an end-to-end data analytics project to analyze food delivery operations, 
 * Total revenue generated: ~448K
 * Average order value: ~89
 
-## 📷 Dashboard
-
-![Dashboard](dashboard/dashboard.png)
-
 ## 🚀 Skills Demonstrated
 
 * Data Cleaning & Transformation
