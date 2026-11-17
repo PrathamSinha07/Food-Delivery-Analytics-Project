@@ -29,7 +29,7 @@ Built an end-to-end data analytics project to analyze food delivery operations, 
 
 The interactive dashboard provides a comprehensive overview of food delivery performance, including revenue, order status, city-wise revenue, order trends, and average order value.
 
-![Food Delivery Analytics Dashboard](dashboard/final-dashboard.png)
+![Food Delivery Analytics Dashboard](dashboard/final_dashboard.png)
 
 
 ## 🚀 Skills Demonstrated
